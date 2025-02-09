@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CTFApp", "CTFApp\CTFApp.csproj", "{79D3190C-00DC-4824-A01D-8C2C1E2C3E3A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{79D3190C-00DC-4824-A01D-8C2C1E2C3E3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79D3190C-00DC-4824-A01D-8C2C1E2C3E3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79D3190C-00DC-4824-A01D-8C2C1E2C3E3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79D3190C-00DC-4824-A01D-8C2C1E2C3E3A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D115E076-E5BF-484B-9101-AA144B50733E}
+	EndGlobalSection
+EndGlobal
