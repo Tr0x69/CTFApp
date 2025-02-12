@@ -22,13 +22,13 @@ namespace CTFApp.Data
                 {
                     Id = "1",
                     userName = "admin",
-                    userScore = "1200000"
+                    userScore = 1200000
                 },
                 new User
                 {
                     Id = "2",
                     userName = "Minh",
-                    userScore = "4000"
+                    userScore = 4000
                 }
             );
         }

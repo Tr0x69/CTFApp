@@ -16,8 +16,7 @@ namespace CTFApp.Controllers
 
         public IActionResult Index()
         {
-            List<User> users = _context.Users.ToList();
-            return View(users);
+            return View();
         }
 
         public IActionResult Privacy()
