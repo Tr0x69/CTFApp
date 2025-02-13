@@ -13,6 +13,8 @@ namespace CTFApp.Data
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Flag> Flag { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -31,7 +33,19 @@ namespace CTFApp.Data
                     userScore = 4000
                 }
             );
+         
+
+            modelBuilder.Entity<Flag>().HasData(
+                new Flag
+                {
+                    Id = 1,
+                    flag = "ctf{example_flag_content}"
+                }
+            );
+        
+
         }
+
 
     }
 }
