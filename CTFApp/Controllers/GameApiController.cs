@@ -67,6 +67,10 @@ namespace CTFApp.Controllers
             {
                 return StatusCode(500, new { message = "Something went wrong while processing your request." });
             }
+            catch(InvalidCastException ex)
+            {
+                return StatusCode(500, new { message = "Something went wrong while processing your request." });
+            }
         }
     }
 }

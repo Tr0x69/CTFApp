@@ -21,4 +21,8 @@
     <PackageReference Include="PuppeteerSharp" Version="20.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\" />
+  </ItemGroup>
+
 </Project>
