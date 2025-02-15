@@ -4,7 +4,7 @@
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace CTFApp.Migrations
+namespace CTFApp.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class FirstInit : Migration

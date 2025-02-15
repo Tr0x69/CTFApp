@@ -1,7 +1,7 @@
-﻿using CTFApp.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using CTFApp.Models;
 
-namespace CTFApp.Data
+namespace CTFApp.DataAccess.Data
 {
     public class ApplicationDbContext : DbContext
     {
@@ -33,7 +33,7 @@ namespace CTFApp.Data
                     userScore = 4000
                 }
             );
-         
+
 
             modelBuilder.Entity<Flag>().HasData(
                 new Flag
@@ -42,7 +42,7 @@ namespace CTFApp.Data
                     flag = "ctf{example_flag_content}"
                 }
             );
-        
+
 
         }
 

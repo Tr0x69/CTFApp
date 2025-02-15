@@ -5,6 +5,10 @@ VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CTFApp", "CTFApp\CTFApp.csproj", "{79D3190C-00DC-4824-A01D-8C2C1E2C3E3A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CTFApp.DataAccess", "CTFApp.DataAccess\CTFApp.DataAccess.csproj", "{24577138-2716-48D5-9037-AE7641312072}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CTFApp.Models", "CTFApp.Models\CTFApp.Models.csproj", "{07B88421-B198-4D3B-AD24-1B2DDC681AA4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{79D3190C-00DC-4824-A01D-8C2C1E2C3E3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79D3190C-00DC-4824-A01D-8C2C1E2C3E3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79D3190C-00DC-4824-A01D-8C2C1E2C3E3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24577138-2716-48D5-9037-AE7641312072}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24577138-2716-48D5-9037-AE7641312072}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24577138-2716-48D5-9037-AE7641312072}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24577138-2716-48D5-9037-AE7641312072}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07B88421-B198-4D3B-AD24-1B2DDC681AA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07B88421-B198-4D3B-AD24-1B2DDC681AA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07B88421-B198-4D3B-AD24-1B2DDC681AA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07B88421-B198-4D3B-AD24-1B2DDC681AA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

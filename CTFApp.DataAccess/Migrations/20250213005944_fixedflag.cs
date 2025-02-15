@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace CTFApp.Migrations
+namespace CTFApp.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class fixedflag : Migration

@@ -1,4 +1,4 @@
-using CTFApp.Data;
+using CTFApp.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

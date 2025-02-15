@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using CTFApp.Data;
+using CTFApp.DataAccess.Data;
 using CTFApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

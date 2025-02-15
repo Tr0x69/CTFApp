@@ -1,4 +1,4 @@
-using CTFApp.Data;
+using CTFApp.DataAccess.Data;
 using CTFApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
