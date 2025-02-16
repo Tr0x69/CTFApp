@@ -1,5 +1,4 @@
-﻿using System.Text;
-using CTFApp.DataAccess.Data;
+﻿using CTFApp.DataAccess.Data;
 using CTFApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +10,7 @@ namespace CTFApp.Controllers
     {
         private ApplicationDbContext _context;
 
-        
+
         public GameController(ApplicationDbContext ctx)
         {
             _context = ctx;
@@ -20,7 +19,7 @@ namespace CTFApp.Controllers
         [HttpGet("index")]
         public IActionResult Index()
         {
-         
+
 
             List<User> users = _context.Users.ToList();
             return View(users);
@@ -30,7 +29,7 @@ namespace CTFApp.Controllers
         [HttpGet("preview")]
         public IActionResult Preview()
         {
-             
+
             return View();
         }
 
@@ -43,6 +42,8 @@ namespace CTFApp.Controllers
                 return BadRequest(new { message = "No File Uploaded" });
 
             }
+
+
 
             //Concat current directory to wwwroot/uploads
             var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
@@ -60,7 +61,7 @@ namespace CTFApp.Controllers
                 {
                     message = "Invalid File Type"
                 });
-                
+
             }
             //create a new file at the uploadFolder path
             var filePath = Path.Combine(uploadsFolder, file.FileName);
@@ -72,7 +73,7 @@ namespace CTFApp.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            return Ok(new {success = true, message = "File Uploaded Succesfully", url = $"/uploads/{file.FileName}" });
+            return Ok(new { success = true, message = "File Uploaded Succesfully", url = $"/uploads/{file.FileName}" });
 
 
         }

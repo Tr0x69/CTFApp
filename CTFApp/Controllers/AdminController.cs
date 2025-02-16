@@ -1,5 +1,4 @@
-﻿using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CTFApp.Controllers
@@ -48,7 +47,7 @@ namespace CTFApp.Controllers
         [HttpGet]
         public IActionResult EditBackground()
         {
-            
+
             Response.StatusCode = 301; // Set HTTP status to 301 Moved Permanently
             Response.Headers["Location"] = "/Game/preview"; // Set the redirect target
 
@@ -58,56 +57,70 @@ namespace CTFApp.Controllers
         [HttpPost]
         public async Task<IActionResult> EditBackground([FromForm] string selectedBackground)
         {
-
-            
-            if (string.IsNullOrEmpty(selectedBackground))
+            try
             {
-                selectedBackground = "cat1.jpg";
-            }
-            selectedBackground = selectedBackground.Trim();
-            
 
-            string[] allowedImages = { "cat1.jpg", "cat2.jpg", "cat3.jpg" };
-            string newBackgroundImage = null;
-            if (allowedImages.Contains(selectedBackground))
-            {
-                //string encodedImage = Convert.ToBase64String(Encoding.UTF8.GetBytes(selectedBackground));
-                //HttpContext.Session.SetString("UserContent", selectedBackground);
-                //return Ok(new { message = "Successfully Selected" });
-                newBackgroundImage = $"/images/{selectedBackground}";
-            }
 
-            if(Regex.IsMatch(selectedBackground, @"^(https|http)?:\/\/", RegexOptions.IgnoreCase))
-            {
-                try
+                if (string.IsNullOrEmpty(selectedBackground))
                 {
-                    byte[] imageBytes = await _httpClient.GetByteArrayAsync(selectedBackground);
-                    newBackgroundImage = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
-                    //string encodedUrl = Convert.ToBase64String(Encoding.UTF8.GetBytes(responseContent));
-                    //HttpContext.Session.SetString("UserContent", responseContent);
-                    //return Content($"<h3>Background Updated</h3><p>Fetched content: {responseContent}</p>", "text/html");
+                    selectedBackground = "cat1.jpg";
                 }
-                catch (HttpRequestException)
+                selectedBackground = selectedBackground.Trim();
+
+
+                string[] allowedImages = { "cat1.jpg", "cat2.jpg", "cat3.jpg" };
+                string newBackgroundImage = null;
+                if (allowedImages.Contains(selectedBackground))
                 {
-                    return BadRequest(new { message = "Failed to fetch external content." });
+                    //string encodedImage = Convert.ToBase64String(Encoding.UTF8.GetBytes(selectedBackground));
+                    //HttpContext.Session.SetString("UserContent", selectedBackground);
+                    //return Ok(new { message = "Successfully Selected" });
+                    newBackgroundImage = $"/images/{selectedBackground}";
                 }
+
+                if (Regex.IsMatch(selectedBackground, @"^(https|http)?:\/\/", RegexOptions.IgnoreCase))
+                {
+
+                    //if (selectedBackground.IndexOf("127.0.0.1", StringComparison.OrdinalIgnoreCase) >= 0 || selectedBackground.IndexOf("localhost", StringComparison.OrdinalIgnoreCase) >= 0)
+                    //{
+                    //    return BadRequest(new { message = "The URL is not allowed." });
+
+                    //}
+                    try
+                    {
+
+                        byte[] imageBytes = await _httpClient.GetByteArrayAsync(selectedBackground);
+                        newBackgroundImage = "data:image/png;base64," + Convert.ToBase64String(imageBytes);
+                        //string encodedUrl = Convert.ToBase64String(Encoding.UTF8.GetBytes(responseContent));
+                        //HttpContext.Session.SetString("UserContent", responseContent);
+                        //return Content($"<h3>Background Updated</h3><p>Fetched content: {responseContent}</p>", "text/html");
+                    }
+                    catch (HttpRequestException)
+                    {
+                        return BadRequest(new { message = "Failed to fetch external content." });
+                    }
+                }
+                if (newBackgroundImage != null)
+                {
+
+
+                    // Inject JavaScript to change the background dynamically
+                    string script = $@"
+                        <script>
+                            document.body.style.backgroundImage = 'url({newBackgroundImage})';
+                            alert('Background updated successfully!');
+                        </script>";
+
+                    // Return the HTML with the injected JS
+                    string updatedContent = htmlContent + script;
+                    return Content(updatedContent, "text/html");
+                }
+                return BadRequest(new { message = "Invalid background selection." });
             }
-            if (newBackgroundImage != null)
+            catch (Exception ex)
             {
-                
-
-                // Inject JavaScript to change the background dynamically
-                string script = $@"
-                    <script>
-                        document.body.style.backgroundImage = 'url({newBackgroundImage})';
-                        alert('Background updated successfully!');
-                    </script>";
-
-                // Return the HTML with the injected JS
-                string updatedContent = htmlContent + script;
-                return Content(updatedContent, "text/html");
+                return StatusCode(500, new { message = "An unexpected error occured" });
             }
-            return BadRequest(new { message = "Invalid background selection." });
         }
 
 
