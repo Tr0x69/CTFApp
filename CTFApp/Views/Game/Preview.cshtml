@@ -30,7 +30,7 @@
 
         formData.append("file", fileInput.files[0]);
 
-        let response = await fetch("/Game/preview", {
+        let response = await fetch("/api/profile", {
             method: "POST",
             body: formData
         });

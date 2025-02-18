@@ -1,97 +1,103 @@
-﻿@model List<User>
+﻿@model GameViewModel
 
 @{
-	ViewBag.Title = "CTF Game";
+    ViewBag.Title = "CTF Game";
 }
 
-<div id="game-container">
-	<h2>Simple CTF Game</h2>
-	<label>Enter Name:</label>
-	<input type="text" id="userName" placeholder="Your Name">
-	<p>Click the button as fast as you can!</p>
-	<button id="startGame">Start Game</button>
-	<button id="clickButton" style="display: none;">Click Me!</button>
-	<p id="scoreDisplay"></p>
-	<button id="submitScore" style="display: none;">Submit Score</button>
+<div class="container">
+    @if (Model.CurrentUser != null)
+    {
+        <div class="current-user-stats mb-4">
+            <h3>Welcome, @Model.CurrentUser.Username!</h3>
+            <p>Your Current Score: @Model.CurrentUser.userScore</p>
+        </div>
+    }
+
+    <div id="game-container" class="mb-4">
+        <h2>Simple CTF Game</h2>
+        <input type="hidden" id="userName" value="@Model.CurrentUser?.Username" />
+        <p>Click the button as fast as you can!</p>
+        <button id="startGame" class="btn btn-primary">Start Game</button>
+        <button id="clickButton" class="btn btn-success" style="display: none;">Click Me!</button>
+        <p id="scoreDisplay"></p>
+    </div>
+
+    <div class="leaderboard">
+        <h3>Leaderboard</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Username</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int rank = 1;
+                }
+                @foreach (var user in Model.Users)
+                {
+                    <tr class="@(user.Username == Model.CurrentUser?.Username ? "table-primary" : "")">
+                        <td>@(rank++)</td>
+                        <td>@user.Username</td>
+                        <td>@user.userScore</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
-<table>
-	<thead>
-		<tr>
-			<th>ID</th>
-			<th>Username</th>
-			<th>Score</th>
-		</tr>
-	</thead>
-	<tbody>
-		@foreach (var user in Model)
-		{
-			<tr>
-				<td>@user.userName</td> @* Ensure this matches the actual property name *@
-				<td>@user.userScore</td> @* Ensure this matches the actual property name *@
-			</tr>
-		}
-	</tbody>
-</table>
-
 @section Scripts {
-	<script>
-		let score = 0;
-		let gameActive = false;
-		let startTime;
+    <script>
+        let score = 0;
+        let gameActive = false;
+        let startTime;
 
-		document.getElementById("startGame").addEventListener("click", function () {
-			// Automatically submit the score after 5 seconds
-			const userName = document.getElementById("userName").value;
-			if (!userName) {
-				alert("Please enter your name.");
-				return;
-			}
-			score = 0;
-			gameActive = true;
-			document.getElementById("clickButton").style.display = "inline-block";
-			document.getElementById("scoreDisplay").innerText = "Score: 0";
-			document.getElementById("startGame").style.display = "none";
+        document.getElementById("startGame").addEventListener("click", function () {
+            score = 0;
+            gameActive = true;
+            document.getElementById("clickButton").style.display = "inline-block";
+            document.getElementById("scoreDisplay").innerText = "Score: 0";
+            document.getElementById("startGame").style.display = "none";
+            startTime = new Date().getTime();
+        });
 
-			startTime = new Date().getTime();
-		});
+        document.getElementById("clickButton").addEventListener("click", function () {
+            if (gameActive) {
+                score++;
+                document.getElementById("scoreDisplay").innerText = "Score: " + score;
 
-		document.getElementById("clickButton").addEventListener("click", function () {
-			if (gameActive) {
-				score++;
-				document.getElementById("scoreDisplay").innerText = "Score: " + score;
+                if (new Date().getTime() - startTime > 5000) {
+                    gameActive = false;
+                    alert(`Game Over! You scored ${score} points!`);
+                    document.getElementById("clickButton").style.display = "none";
+                    document.getElementById("startGame").style.display = "inline-block";
 
-				// Stop game after 5 seconds
-				if (new Date().getTime() - startTime > 5000) {
-					gameActive = false;
-					alert(`Congratulations! You Have Scored ${score}`);
-					document.getElementById("clickButton").style.display = "none";
+                    const userData = {
+                        UserName: document.getElementById("userName").value,
+                        UserScore: score
+                    };
 
-
-
-					const userData = {
-						UserName: document.getElementById("userName").value,
-						UserScore: score
-					};
-
-					fetch("/api/game/submitscore", {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json"
-						},
-						body: JSON.stringify(userData)
-					})
-					.catch(error => {
-						console.error("Error:", error);
-						alert("Failed to submit score.");
-					});
-				}
-			}
-		});
-
-
-
-
-
-	</script>
+                    fetch("/api/game/submitscore", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(userData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        location.reload(); // Refresh the page to update scores
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("Failed to submit score.");
+                    });
+                }
+            }
+        });
+    </script>
 }

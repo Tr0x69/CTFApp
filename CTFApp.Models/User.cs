@@ -1,13 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace CTFApp.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        [Key]
-        public string? Id { get; set; }
-        public string userName { get; set; }
         public int userScore { get; set; }
 
+        public string ImageAva { get; set; }
     }
 }
