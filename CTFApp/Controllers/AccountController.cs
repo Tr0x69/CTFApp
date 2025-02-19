@@ -11,10 +11,12 @@ namespace CTFApp.Controllers
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
-        public AccountController(SignInManager<User> signInManager, UserManager<User> userManager)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public AccountController(SignInManager<User> signInManager, UserManager<User> userManager, IWebHostEnvironment webHostEnvironment)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult Login()
@@ -53,12 +55,27 @@ namespace CTFApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+
+
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    //create a new directory
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                string defaultImagePath = "\\uploads\\cat4.jpg";
+
                 User user = new User
                 {
                     UserName = model.Username,
-                    userScore = 0
+                    userScore = 0,
+                    ImageAva = defaultImagePath
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
+
+
+
 
                 if (result.Succeeded)
                 {

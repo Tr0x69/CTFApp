@@ -130,19 +130,36 @@ namespace CTFApp.Controllers
         public async Task<IActionResult> Profile(IFormFile file)
         {
             //Response.Headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self';";
+
             if (file == null || file.Length == 0)
             {
-                return BadRequest(new { message = "No File Uploaded" });
+                return BadRequest(new { message = "Invalid File" });
 
             }
 
+            var user = await _userManager.GetUserAsync(User);
 
+            if (user == null)
+            {
+                return Unauthorized();
+            }
 
-            //Concat current directory to wwwroot/uploads
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-            //create a new directory
-            Directory.CreateDirectory(uploadsFolder);
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
 
+            if (!string.IsNullOrEmpty(user.ImageAva))
+            {
+                var oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, user.ImageAva.TrimStart('\\'));
+                if (System.IO.File.Exists(oldFilePath))
+                {
+                    System.IO.File.Delete(oldFilePath);
+                }
+
+            }
             //extions allowed
             var fileExtension = Path.GetExtension(file.FileName).ToLower();
             var allowedExtensions = new[] { ".jpg", ".png", ".gif", ".js" };
@@ -157,7 +174,7 @@ namespace CTFApp.Controllers
 
             }
             //create a new file at the uploadFolder path
-            var filePath = Path.Combine(uploadsFolder, file.FileName);
+            var filePath = Path.Combine(uploadsFolder, fileName);
 
             //start to copy the content 
 
@@ -165,8 +182,11 @@ namespace CTFApp.Controllers
             {
                 await file.CopyToAsync(stream);
             }
+            user.ImageAva = $"\\uploads\\{fileName}";
 
-            return Ok(new { success = true, message = "File Uploaded Succesfully", url = $"/uploads/{file.FileName}" });
+            await _userManager.UpdateAsync(user);
+
+            return Ok(new { success = true, message = "File Uploaded Succesfully", url = $"/uploads/{fileName}" });
 
 
         }

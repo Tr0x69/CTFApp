@@ -22,11 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Profile\" />
-    <Folder Include="wwwroot\uploads\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\CTFApp.DataAccess\CTFApp.DataAccess.csproj" />
     <ProjectReference Include="..\CTFApp.Models\CTFApp.Models.csproj" />
   </ItemGroup>

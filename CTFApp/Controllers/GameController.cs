@@ -37,11 +37,7 @@ namespace CTFApp.Controllers
         }
 
 
-        [HttpGet("profile")]
-        public IActionResult Profile()
-        {
-            return View();
-        }
+
 
 
     }

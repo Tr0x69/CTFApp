@@ -1,12 +1,21 @@
-﻿
-
+﻿@model User
 @{
-    ViewData["Title"] = "Upload File";
+    ViewData["Title"] = "Profile Page";
 }
 
-<h2>Upload an Image with a Message</h2>
+<h2>@Model.UserName's Profile</h2>
 
-<form id="uploadForm" >
+<!-- Profile Picture -->
+<img src="@Model.ImageAva" alt="Profile Picture" width="150" height="150" class="rounded-circle" />
+
+<!-- File Upload Form -->
+@* <form method="post" enctype="multipart/form-data" asp-action="UploadProfilePicture"> *@
+@*     <input type="file" name="file" accept="image/*" required /> *@
+@*     <button type="submit" class="btn btn-primary">Upload New Picture</button> *@
+@* </form> *@
+
+
+<form id="uploadForm">
     <label for="file">Choose an image file:</label>
     <input type="file" name="file" id="file" required />
     <br>
@@ -14,6 +23,12 @@
 </form>
 
 <div id="result"></div>
+
+
+<!-- User Information -->
+<p><strong>Username:</strong> @Model.UserName</p>
+<p><strong>Score:</strong> @Model.userScore</p>
+
 
 
 <script>
@@ -38,34 +53,15 @@
         let data = await response.json();
 
         if (data.success) {
+            document.querySelector("img[alt='Profile Picture']").src = data.url;
             document.getElementById("result").innerHTML = `
                 <p style='color:green;'>${data.message}</p>
                 <a href="${data.url}" target="_blank">${data.url}</a>
                 <br>
-                
+
             `;
         } else {
             document.getElementById("result").innerHTML = `<p style='color:red;'>${data.message}</p>`;
         }
     });
 </script>
-
-
-
-@* @if (ViewData["UploadedUrl"] != null) *@
-@* { *@
-@*     <h3>Uploaded File:</h3> *@
-@*     <p>Click to view: <a href="@ViewData["UploadedUrl"]" target="_blank">@ViewData["UploadedUrl"]</a></p> *@
-@*     <img src="@ViewData["UploadedUrl"]" width="300" alt="Uploaded Image" /> *@
-@* } *@
-
-
-@* <h3>Preview:</h3> *@
-@* <div> *@
-@*     @Html.Raw(ViewBag.UserContent)  *@
-@* </div> *@
-
-@* <div style="background-image: url('/images/@ViewBag.BackgroundImage'); width: 100%; height: 300px; background-size: cover;"> *@
-@*     <!-- Background image container --> *@
-@*     <p style="color: white; padding: 10px;">Your background has been applied!</p> *@
-@* </div> *@
