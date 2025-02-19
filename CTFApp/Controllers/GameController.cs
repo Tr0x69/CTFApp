@@ -22,11 +22,18 @@ namespace CTFApp.Controllers
 
 
             var users = await _context.Users.OrderByDescending(u => u.userScore).Select(u => new UserScoreViewModel { Username = u.UserName, userScore = u.userScore }).ToListAsync();
+
+
             var currentUser = await _context.Users.Where(u => u.UserName == User.Identity.Name).Select(u => new UserScoreViewModel
             {
                 Username = u.UserName,
-                userScore = u.userScore
+                userScore = u.userScore,
             }).FirstOrDefaultAsync();
+
+            if (currentUser == null)
+            {
+                return Unauthorized("Unauthorized");
+            }
 
             var gameViewModel = new GameViewModel
             {

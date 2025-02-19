@@ -53,7 +53,7 @@ namespace CTFApp.Controllers
             }
 
             existingUser.userScore = user.userScore;
-
+            existingUser.ImageAva = existingUser.ImageAva;
 
             _context.Update(existingUser);
             _context.SaveChanges();

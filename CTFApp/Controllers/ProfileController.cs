@@ -20,16 +20,29 @@ namespace CTFApp.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? id)
         {
 
-            var user = await _userManager.GetUserAsync(User);
+            User user;
+            if (id == null)
+            {
+                user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Unauthorized();
+                }
+            }
+
+            user = _context.Users.FirstOrDefault(x => x.Id == id);
 
             if (user == null)
             {
-                return Unauthorized();
+                return BadRequest("Invalid User ID");
             }
             return View(user);
         }
+
+
+
     }
 }

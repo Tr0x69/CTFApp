@@ -10,5 +10,6 @@
     {
         public string Username { get; set; }
         public int userScore { get; set; }
+
     }
 }

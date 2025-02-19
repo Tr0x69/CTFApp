@@ -1,6 +1,12 @@
-﻿@model User
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@inject SignInManager<User> signInManager;
+@model User
 @{
     ViewData["Title"] = "Profile Page";
+}
+@{
+    var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 }
 
 <h2>@Model.UserName's Profile</h2>
@@ -14,16 +20,17 @@
 @*     <button type="submit" class="btn btn-primary">Upload New Picture</button> *@
 @* </form> *@
 
-
-<form id="uploadForm">
-    <label for="file">Choose an image file:</label>
-    <input type="file" name="file" id="file" required />
-    <br>
-    <button type="submit">Upload</button>
-</form>
+@if (Model.Id == loggedInUserId)
+{
+    <form id="uploadForm">
+        <label for="file">Choose an image file:</label>
+        <input type="file" name="file" id="file" required />
+        <br>
+        <button type="submit">Upload</button>
+    </form>
 
 <div id="result"></div>
-
+}
 
 <!-- User Information -->
 <p><strong>Username:</strong> @Model.UserName</p>

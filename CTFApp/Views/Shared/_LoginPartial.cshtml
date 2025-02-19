@@ -1,10 +1,15 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
 @inject SignInManager<User> signInManager;
+
+@{
+	var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+}
 
 <ul class="navbar-nav ms-auto">
 	@if(signInManager.IsSignedIn(User)) {
 		<li class="nav-item">
-			<a class="nav-link" asp-controller="Profile" asp-action="Index">Profile</a>
+			<a class="nav-link" asp-controller="Profile" asp-route-id="@userId" asp-action="Index">Profile</a>
 		</li>
 		<li class="nav-item">
 			<a class="nav-link text-dark" asp-controller="Account" asp-action="Logout">Logout</a>

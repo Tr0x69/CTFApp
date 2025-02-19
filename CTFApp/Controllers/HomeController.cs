@@ -1,7 +1,8 @@
+using System.Diagnostics;
 using CTFApp.DataAccess.Data;
 using CTFApp.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace CTFApp.Controllers
 {
@@ -11,12 +12,13 @@ namespace CTFApp.Controllers
 
         public HomeController(ApplicationDbContext ctx)
         {
-           _context = ctx;
+            _context = ctx;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            IEnumerable<User> users = await _context.Users.ToListAsync();
+            return View(users);
         }
 
         public IActionResult Privacy()

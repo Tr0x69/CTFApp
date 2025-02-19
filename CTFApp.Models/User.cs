@@ -6,6 +6,6 @@ namespace CTFApp.Models
     {
         public int userScore { get; set; }
 
-        public string ImageAva { get; set; }
+        public string? ImageAva { get; set; }
     }
 }

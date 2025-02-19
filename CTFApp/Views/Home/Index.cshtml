@@ -1,4 +1,6 @@
-﻿@{
+﻿
+@model IEnumerable<User>
+@{
     ViewData["Title"] = "Home";
 }
 
@@ -6,3 +8,44 @@
 
 <!-- Link to navigate to /Game/Index -->
 <a href="/Game/Index">Click here to go to Game?</a>
+
+
+<div class="container">
+    <h2 class="text-center my-4">Profiles</h2>
+    <div class="row">
+        @foreach (var user in Model)
+        {
+            <div class="col-md-4">
+                <div class="profile-card text-center">
+                    <img src="@user.ImageAva" class="profile-img" alt="@user.UserName">
+                    <h4>@user.UserName</h4>
+                    <p>@user.userScore</p>
+                    @* <button class="btn btn-primary">Send Message</button> *@
+                    <a href="/Profile/Index/@user.Id" class="btn btn-secondary">See Profile</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .profile-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .profile-img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%; /* Makes image circular */
+        object-fit: cover;
+    }
+
+    .btn {
+        margin: 5px;
+    }
+</style>
+

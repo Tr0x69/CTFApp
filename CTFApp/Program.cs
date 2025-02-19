@@ -1,3 +1,4 @@
+using CTFApp;
 using CTFApp.DataAccess.Data;
 using CTFApp.Models;
 using Microsoft.AspNetCore.Identity;
@@ -28,9 +29,11 @@ builder.Services.AddDistributedMemoryCache();  // Add memory cache for sessions
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);  // Set session timeout
-    options.Cookie.HttpOnly = true;
+    options.Cookie.HttpOnly = false;
     options.Cookie.IsEssential = true;
 });
+
+builder.Services.AddSingleton<ChatService>();
 
 //builder.WebHost.UseKestrel(options =>
 //{
@@ -39,6 +42,9 @@ builder.Services.AddSession(options =>
 
 //builder.Services.AddRazorPages();
 var app = builder.Build();
+
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -44,6 +44,13 @@ namespace CTFApp.Controllers
             return View(model);
         }
 
+
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
         public IActionResult Register()
         {
             return View();
