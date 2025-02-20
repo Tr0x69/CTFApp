@@ -2,6 +2,9 @@
 
 @{
     ViewBag.Title = "CTF Game";
+
+    //Adding CSP
+    Context.Response.Headers["Content-Security-Policy"] = "script-src 'self';";
 }
 
 <div class="container">
@@ -48,57 +51,24 @@
             </tbody>
         </table>
     </div>
+
+
+    <div id="chat-container" class="mb-4">
+        <h3>Chat</h3>
+        <div id="chat-messages"></div>
+        <input type="text" id="messageInput" placeholder="Type a message..." />
+        <button id="sendButton">Send</button>
+    </div>
 </div>
 
 @section Scripts {
-    <script>
-        let score = 0;
-        let gameActive = false;
-        let startTime;
+   
 
-        document.getElementById("startGame").addEventListener("click", function () {
-            score = 0;
-            gameActive = true;
-            document.getElementById("clickButton").style.display = "inline-block";
-            document.getElementById("scoreDisplay").innerText = "Score: 0";
-            document.getElementById("startGame").style.display = "none";
-            startTime = new Date().getTime();
-        });
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/js/game.js"></script>
+    <script src="~/js/chat.js"></script>
+ 
 
-        document.getElementById("clickButton").addEventListener("click", function () {
-            if (gameActive) {
-                score++;
-                document.getElementById("scoreDisplay").innerText = "Score: " + score;
-
-                if (new Date().getTime() - startTime > 5000) {
-                    gameActive = false;
-                    alert(`Game Over! You scored ${score} points!`);
-                    document.getElementById("clickButton").style.display = "none";
-                    document.getElementById("startGame").style.display = "inline-block";
-
-                    const userData = {
-                        UserName: document.getElementById("userName").value,
-                        UserScore: score,
-                    };
-
-                    fetch("/api/game/submitscore", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(userData)
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        alert(data.message);
-                        location.reload(); // Refresh the page to update scores
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
-                        alert("Failed to submit score.");
-                    });
-                }
-            }
-        });
-    </script>
+    
+  
 }

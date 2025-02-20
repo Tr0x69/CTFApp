@@ -1,4 +1,3 @@
-using CTFApp;
 using CTFApp.DataAccess.Data;
 using CTFApp.Models;
 using Microsoft.AspNetCore.Identity;
@@ -33,7 +32,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-builder.Services.AddSingleton<ChatService>();
+builder.Services.AddSignalR();
 
 //builder.WebHost.UseKestrel(options =>
 //{
@@ -66,4 +65,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 //app.MapRazorPages();
+
+app.MapHub<ChatHub>("/chathub");
+
 app.Run();
