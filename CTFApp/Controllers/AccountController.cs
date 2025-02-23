@@ -71,7 +71,7 @@ namespace CTFApp.Controllers
                     Directory.CreateDirectory(uploadsFolder);
                 }
 
-                string defaultImagePath = "\\uploads\\cat4.jpg";
+                string defaultImagePath = "\\images\\cat4.jpg";
 
                 User user = new User
                 {

@@ -1,11 +1,13 @@
 ﻿using CTFApp.DataAccess.Data;
 using CTFApp.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFApp.Controllers
 {
     [Route("Game")]
+    [Authorize]
     public class GameController : Controller
     {
         private ApplicationDbContext _context;

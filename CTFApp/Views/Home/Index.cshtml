@@ -4,24 +4,44 @@
     ViewData["Title"] = "Home";
 }
 
-<h1>Welcome to the Home Page</h1>
 
 <!-- Link to navigate to /Game/Index -->
-<a href="/Game/Index">Click here to go to Game?</a>
 
 
-<div class="container">
-    <h2 class="text-center my-4">Profiles</h2>
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Welcome to the Home Page</h1>
+
+    <div class="text-center mb-4">
+        <a href="/Game/Index" class="btn btn-primary">Go to Game</a>
+    </div>
+
+
+
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-6">
+            <form method="GET" class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Search profiles..." value="@ViewBag.SearchTerm">
+                <button type="submit" class="btn btn-outline-secondary ms-2">Search</button>
+            </form>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(ViewBag.SearchTerm))
+    {
+        <p class="text-center">Showing results for: <b>@Html.Raw(ViewBag.SearchTerm)</b></p>
+    }
     <div class="row">
         @foreach (var user in Model)
         {
-            <div class="col-md-4">
-                <div class="profile-card text-center">
-                    <img src="@user.ImageAva" class="profile-img" alt="@user.UserName">
-                    <h4>@user.UserName</h4>
-                    <p>@user.userScore</p>
-                    @* <button class="btn btn-primary">Send Message</button> *@
-                    <a href="/Profile/Index/@user.Id" class="btn btn-secondary">See Profile</a>
+            <div class="col-md-4 mb-4">
+                <div class="card text-center shadow-sm">
+                    <img src="@user.ImageAva" class="card-img-top rounded-circle mx-auto mt-3" alt="@user.UserName" style="width: 100px; height: 100px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">@user.UserName</h5>
+                        <p class="card-text">Score: @user.userScore</p>
+                        <a href="/Profile/Index/@user.Id" class="btn btn-secondary">See Profile</a>
+                    </div>
                 </div>
             </div>
         }

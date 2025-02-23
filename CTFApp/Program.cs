@@ -1,5 +1,6 @@
 using CTFApp.DataAccess.Data;
 using CTFApp.Models;
+using CTFApp.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,7 +43,7 @@ builder.Services.AddSignalR();
 //builder.Services.AddRazorPages();
 var app = builder.Build();
 
-
+DatabaseManagementService.MigrationInitialization(app);
 
 
 // Configure the HTTP request pipeline.

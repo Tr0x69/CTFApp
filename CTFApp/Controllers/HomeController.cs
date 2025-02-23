@@ -1,11 +1,13 @@
 using System.Diagnostics;
 using CTFApp.DataAccess.Data;
 using CTFApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFApp.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private ApplicationDbContext _context;
@@ -15,9 +17,10 @@ namespace CTFApp.Controllers
             _context = ctx;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? search)
         {
-            IEnumerable<User> users = await _context.Users.ToListAsync();
+            var users = string.IsNullOrEmpty(search) ? await _context.Users.ToListAsync() : await _context.Users.Where(u => u.UserName.Contains(search)).ToListAsync();
+            ViewBag.SearchTerm = search;
             return View(users);
         }
 

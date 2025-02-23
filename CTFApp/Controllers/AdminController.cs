@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CTFApp.Controllers
@@ -6,6 +7,7 @@ namespace CTFApp.Controllers
 
     [Route("Admin/Edit")]
     [ApiController]
+    [Authorize]
     public class AdminController : Controller
     {
         private readonly HttpClient _httpClient = new HttpClient();

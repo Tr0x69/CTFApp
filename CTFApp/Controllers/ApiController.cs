@@ -1,5 +1,6 @@
 ﻿using CTFApp.DataAccess.Data;
 using CTFApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,7 @@ using PuppeteerSharp;
 
 namespace CTFApp.Controllers
 {
-
+    [Authorize]
     [ApiController]
     [Route("/api")]
     public class ApiController : Controller

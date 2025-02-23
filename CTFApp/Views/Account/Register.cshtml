@@ -1,37 +1,42 @@
-﻿@using CTFApp.ViewModels;
+﻿@using CTFApp.ViewModels
 @model RegisterViewModel
 
 @{
     ViewData["Title"] = "Register";
-    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+    //Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }
 
-<div class="account-container">
-    <div class="account-box">
-        <h2 class="text-center mb-4">Register</h2>
-        <form asp-action="Register" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="mb-3">
-                <label asp-for="Username" class="form-label"></label>
-                <input asp-for="Username" class="form-control" />
-                <span asp-validation-for="Username" class="text-danger"></span>
+<div class="container h-100">
+    <div class="row justify-content-center align-items-center h-100">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-secondary">
+                <div class="card-body p-4">
+                    <h2 class="card-title text-center mb-4 fw-bold text-uppercase">Register</h2>
+                    <form asp-action="Register" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="Username" class="form-control" placeholder="Username" />
+                            <label asp-for="Username" class="form-label text-muted">Username</label>
+                            <span asp-validation-for="Username" class="text-danger small"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="Password" class="form-control" placeholder="Password" />
+                            <label asp-for="Password" class="form-label text-muted">Password</label>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm Password" />
+                            <label asp-for="ConfirmPassword" class="form-label text-muted">Confirm Password</label>
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 text-uppercase fw-bold py-2">Register</button>
+                        <div class="text-center mt-3">
+                            <a asp-controller="Home" asp-action="Index" class="link-primary text-decoration-none">Back to Home</a>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="mb-3">
-                <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="ConfirmPassword" class="form-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
-            <input type="submit" value="Register" class="btn btn-success w-100 p-2" />
-
-            <div class="text-center">
-                <a asp-controller="Home" asp-action="Index" class="text-decoration-none mt-3">Back</a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 

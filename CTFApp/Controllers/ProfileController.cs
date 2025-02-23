@@ -1,10 +1,12 @@
 ﻿using CTFApp.DataAccess.Data;
 using CTFApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CTFApp.Controllers
 {
+    [Authorize]
     public class ProfileController : Controller
     {
 

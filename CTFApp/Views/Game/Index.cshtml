@@ -3,72 +3,167 @@
 @{
     ViewBag.Title = "CTF Game";
 
-    //Adding CSP
+    // Adding CSP
     Context.Response.Headers["Content-Security-Policy"] = "script-src 'self';";
 }
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    #game-container {
+        margin: 30px 0;
+        text-align: center;
+    }
+
+    #startGame {
+        font-size: 18px;
+        padding: 10px 20px;
+    }
+
+    #clickButton {
+        font-size: 18px;
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    #clickButton:hover {
+        background-color: #45a049;
+    }
+
+    #scoreDisplay {
+        font-size: 20px;
+        margin-top: 20px;
+    }
+
+    /* Chat and leaderboard styles */
+    .chat-container, .leaderboard-container {
+        border: 2px solid #ddd;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+        
+    .leaderboard-container table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .leaderboard-container th, .leaderboard-container td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    .leaderboard-container th {
+        background-color: #f4f4f4;
+    }
+
+    .leaderboard-container tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    
+    .current-user-stats {
+        padding: 10px;
+        background-color: #f0f0f0;
+        border-radius: 5px;
+    }
+
+    
+    #cookieImage {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.2s ease;
+    }
+
+    #cookieImage:active {
+        transform: scale(0.9);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+</style>
 
 <div class="container">
     @if (Model.CurrentUser != null)
     {
-        <div class="current-user-stats mb-4">
+        <div class="current-user-stats mb-4 text-center">
             <h3>Welcome, @Model.CurrentUser.Username!</h3>
             <p>Your Current Score: @Model.CurrentUser.userScore</p>
         </div>
     }
 
-    <div id="game-container" class="mb-4">
-        <h2>Simple CTF Game</h2>
- 
-        <input type="hidden" id="userName" value="@Model.CurrentUser?.Username" />
-        <p>Click the button as fast as you can!</p>
-        <button id="startGame" class="btn btn-primary">Start Game</button>
-        <button id="clickButton" class="btn btn-success" style="display: none;">Click Me!</button>
-        <p id="scoreDisplay"></p>
-    </div>
+    <div class="row">
+        <!-- Left Side: Game -->
+        <div class="col-md-6">
+            <div id="game-container" class="p-4 border rounded shadow">
+                <h2>Simple CTF Game</h2>
 
-    <div class="leaderboard">
-        <h3>Leaderboard</h3>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Username</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-            <tbody>
-                @{
-                    int rank = 1;
-                }
-                @foreach (var user in Model.Users)
-                {
-                    <tr class="@(user.Username == Model.CurrentUser?.Username ? "table-primary" : "")">
-                        <td>@(rank++)</td>
-                        <td>@user.Username</td>
-                        <td>@user.userScore</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+                <input type="hidden" id="userName" value="@Model.CurrentUser?.Username" />
+                <p>Click the button as fast as you can!</p>
+                <button id="startGame" class="btn btn-primary">Start Game</button>
+                @* <button id="clickButton" class="btn btn-success" style="display: none;">Click Me!</button> *@
+                <!-- Instead of the button, use an image -->
+                <img id="cookieImage" src="~/images/cookie.png" alt="Click me!" class="cookie-image" style="cursor: pointer; display: none;" />
+                
 
+                <p id="scoreDisplay"></p>
+            </div>
+        </div>
 
-    <div id="chat-container" class="mb-4">
-        <h3>Chat</h3>
-        <div id="chat-messages"></div>
-        <input type="text" id="messageInput" placeholder="Type a message..." />
-        <button id="sendButton">Send</button>
+        <!-- Right Side: Chat (Top) & Leaderboard (Bottom) -->
+        <div class="col-md-6 d-flex flex-column">
+            <!-- Chat Section -->
+            <div id="chat-container" class="flex-grow-1 p-4 border rounded shadow mb-3">
+                <h3>Chat</h3>
+                <div id="chat-messages" class="border p-2 mb-2" style="height: 150px; overflow-y: auto;"></div>
+                <div class="d-flex">
+                    <input type="text" id="messageInput" class="form-control me-2" placeholder="Type a message..." />
+                    <button id="sendButton" class="btn btn-primary">Send</button>
+                </div>
+            </div>
+
+            <!-- Leaderboard Section -->
+            <div class="leaderboard flex-grow-1 p-4 border rounded shadow">
+                <h3>Leaderboard</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Username</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int rank = 1;
+                        }
+                        @foreach (var user in Model.Users)
+                        {
+                            <tr class="@(user.Username == Model.CurrentUser?.Username ? "table-primary" : "")">
+                                <td>@(rank++)</td>
+                                <td>@user.Username</td>
+                                <td>@user.userScore</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
 @section Scripts {
-   
-
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
-    <script src="~/js/game.js"></script>
+    <script src="~/js/game1.js"></script>
     <script src="~/js/chat.js"></script>
- 
-
-    
-  
 }

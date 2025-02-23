@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CTFApp.Controllers
 {
 
     [Route("/secret")]
     [ApiController]
+    [Authorize]
     public class SecretController : Controller
     {
 
