@@ -14,7 +14,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./uploads:/app/wwwroot/uploads
+      - ./CTFApp/wwwroot/uploads:/app/wwwroot/uploads
     networks:
       - ctf-network
     

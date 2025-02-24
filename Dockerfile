@@ -18,8 +18,8 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 #install vsdbg for debugging
-RUN apt-get update && apt-get install -y unzip procps && \
-    curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg
+# RUN apt-get update && apt-get install -y unzip procps && \
+#     curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg
 COPY ["CTFApp/CTFApp.csproj", "CTFApp/"]
 COPY ["CTFApp.DataAccess/CTFApp.DataAccess.csproj", "CTFApp.DataAccess/"]
 COPY ["CTFApp.Models/CTFApp.Models.csproj", "CTFApp.Models/"]
