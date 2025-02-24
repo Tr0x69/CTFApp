@@ -37,10 +37,10 @@ To get the best experience, use **black-box testing** techniques. Assume no prio
 
 **Disclaimer:** This project is for educational purposes only.
 
-![Image 1](https://github.com/Tr0x69/CTFApp/raw/main/CTFApp/wwwroot/images/image1.png)  
+![Image 1](CTFApp/wwwroot/images/1.png)  
 
-![Image 2](https://github.com/Tr0x69/CTFApp/raw/main/CTFApp/wwwroot/images/image2.png)  
+![Image 2](CTFApp/wwwroot/images/2.png)  
 
-![Image 3](https://github.com/Tr0x69/CTFApp/raw/main/CTFApp/wwwroot/images/image3.png)  
+![Image 3](CTFApp/wwwroot/images/3.png) 
 
 Happy Hacking! 🛡️
