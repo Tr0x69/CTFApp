@@ -154,7 +154,7 @@ namespace CTFApp.Controllers
 
             if (!string.IsNullOrEmpty(user.ImageAva))
             {
-                var oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, user.ImageAva.TrimStart('\\'));
+                var oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, user.ImageAva.TrimStart('\\').Replace("\\", "/"));
                 if (System.IO.File.Exists(oldFilePath))
                 {
                     System.IO.File.Delete(oldFilePath);
