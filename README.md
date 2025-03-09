@@ -28,6 +28,21 @@ http://localhost:PORT
 
 To get the best experience, use **black-box testing** techniques. Assume no prior knowledge of the source code and test the application as an attacker would.  
 
+
+## Debugging in VSCode
+
+I recently added a new `.vscode` folder with a debug configuration to enable debugging in **VSCode**.  
+Make sure to open the project in **VSCode** and use the provided launch settings to start debugging efficiently.
+
+### How to Use:
+1. Open the project in **VSCode**.
+2. Navigate to the **Run and Debug** panel (`Ctrl + Shift + D`).
+3. Select the appropriate debug configuration.
+4. Click **Start Debugging** (`F5`).
+
+If you run into any issues, check the `.vscode/launch.json` file to modify settings accordingly.
+
+
 ### Common Vulnerabilities to Explore  
 - SQL Injection  
 - Cross-Site Scripting (XSS)  
