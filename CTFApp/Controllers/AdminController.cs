@@ -1,16 +1,24 @@
 ﻿using System.Text.RegularExpressions;
+using CTFApp.DataAccess.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CTFApp.Controllers
 {
 
-    [Route("Admin/Edit")]
+    [Route("Admin")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly HttpClient _httpClient = new HttpClient();
+        private readonly ApplicationDbContext _context;
+        public AdminController(ApplicationDbContext ctx)
+        {
+            _context = ctx;
+        }
+
 
 
         string htmlContent = @"
@@ -46,17 +54,19 @@ namespace CTFApp.Controllers
                 <button type='submit' class='btn btn-primary mt-2'>Save</button>
                 </form>";
 
-        [HttpGet]
+        [AllowAnonymous]
+        [HttpGet("Edit")]
         public IActionResult EditBackground()
         {
 
             Response.StatusCode = 301; // Set HTTP status to 301 Moved Permanently
-            Response.Headers["Location"] = "/Game/preview"; // Set the redirect target
+            Response.Headers["Location"] = "/Game/Index"; // Set the redirect target
 
             return Content(htmlContent, "text/html"); // Return the HTML content with the 301 status
         }
 
-        [HttpPost]
+        [HttpPost("Edit")]
+        [AllowAnonymous]
         public async Task<IActionResult> EditBackground([FromForm] string selectedBackground)
         {
             try
@@ -126,5 +136,13 @@ namespace CTFApp.Controllers
         }
 
 
+        [HttpGet("Index")]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+
     }
 }
+

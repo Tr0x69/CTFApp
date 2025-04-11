@@ -19,7 +19,7 @@ namespace CTFApp.Controllers
 
         public async Task<IActionResult> Index(string? search)
         {
-            var users = string.IsNullOrEmpty(search) ? await _context.Users.ToListAsync() : await _context.Users.Where(u => u.UserName.Contains(search)).ToListAsync();
+            var users = string.IsNullOrEmpty(search) ? await _context.Users.ToListAsync() : await _context.Users.Where(u => u.Username.Contains(search)).ToListAsync();
             ViewBag.SearchTerm = search;
             return View(users);
         }

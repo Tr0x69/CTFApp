@@ -1,18 +1,16 @@
-﻿@using Microsoft.AspNetCore.Identity
-@using System.Security.Claims
-@inject SignInManager<User> signInManager;
+﻿@using System.Security.Claims
 @model User
 @{
     ViewData["Title"] = "Profile Page";
 }
 @{
-    var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var loggedInUserId = User.FindFirstValue("Id");
 }
 
 <div class="container d-flex justify-content-center mt-5">
     <div class="card" style="width: 100%; max-width: 600px;">
         <div class="card-body text-center">
-            <h2 class="card-title">@Model.UserName's Profile</h2>
+            <h2 class="card-title">@Model.Username's Profile</h2>
 
             <!-- Profile Picture -->
             <div class="mb-4">
@@ -20,7 +18,7 @@
             </div>
 
             <!-- User Information -->
-            <p><strong class="text-primary">Username:</strong> @Model.UserName</p>
+            <p><strong class="text-primary">Username:</strong> @Model.Username</p>
             <p><strong class="text-primary">Score:</strong> @Model.userScore</p>
 
             @if (Model.Id == loggedInUserId)

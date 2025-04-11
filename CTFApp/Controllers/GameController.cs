@@ -23,12 +23,16 @@ namespace CTFApp.Controllers
         {
 
 
-            var users = await _context.Users.OrderByDescending(u => u.userScore).Select(u => new UserScoreViewModel { Username = u.UserName, userScore = u.userScore }).ToListAsync();
-
-
-            var currentUser = await _context.Users.Where(u => u.UserName == User.Identity.Name).Select(u => new UserScoreViewModel
+            var users = await _context.Users.OrderByDescending(u => u.userScore).Select(u => new UserScoreViewModel { Username = u.Username, userScore = u.userScore }).ToListAsync();
+            var currentUsername = User.FindFirst("Username")?.Value;
+            if (string.IsNullOrEmpty(currentUsername))
             {
-                Username = u.UserName,
+                return Unauthorized("Unauthorized: Username Not Found");
+            }
+
+            var currentUser = await _context.Users.Where(u => u.Username == currentUsername).Select(u => new UserScoreViewModel
+            {
+                Username = u.Username,
                 userScore = u.userScore,
             }).FirstOrDefaultAsync();
 

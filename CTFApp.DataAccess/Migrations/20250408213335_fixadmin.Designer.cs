@@ -3,6 +3,7 @@ using CTFApp.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CTFApp.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250408213335_fixadmin")]
+    partial class fixadmin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,8 +78,8 @@ namespace CTFApp.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c3648669-7a6f-42d1-88e6-44f6b6a9b57e",
-                            Password = "$2a$11$.TU.36GokhZBVmZRro9Cpeq0ubJPS6sLV5kWkw.dC1R0/RsNWynIe",
+                            Id = "1fe2e35d-c0b6-4dd0-84ee-139d548ee4ac",
+                            Password = "$2a$11$2syZU3BzHJwopoc63ghojuE7qfB9tsZ0GVStD.V4A4hzDNZ.hd9Xy",
                             Role = "Admin",
                             Username = "admin",
                             userScore = 0

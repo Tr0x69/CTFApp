@@ -1,7 +1,9 @@
-﻿using CTFApp.Models;
+﻿using CTFApp.DataAccess.Data;
+using CTFApp.Models;
+using CTFApp.Services;
 using CTFApp.ViewModels;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CTFApp.Controllers
 {
@@ -9,14 +11,16 @@ namespace CTFApp.Controllers
 
     public class AccountController : Controller
     {
-        private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
+        private readonly JwtService _jwtService;
+        private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public AccountController(SignInManager<User> signInManager, UserManager<User> userManager, IWebHostEnvironment webHostEnvironment)
+
+        public AccountController(JwtService jwtService, ApplicationDbContext ctx, IWebHostEnvironment webHostEnvironment)
         {
-            _signInManager = signInManager;
-            _userManager = userManager;
+            _jwtService = jwtService;
+            _context = ctx;
             _webHostEnvironment = webHostEnvironment;
+
         }
 
         public IActionResult Login()
@@ -29,17 +33,17 @@ namespace CTFApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, lockoutOnFailure: false);
-                if (result.Succeeded)
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
+                if (user != null && BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
                 {
+                    var token = _jwtService.GenerateToken(user.Id, user.Username, user.Role);
+                    HttpContext.Response.Cookies.Append("jwt", token, new CookieOptions
+                    {
+                        Expires = DateTimeOffset.UtcNow.AddDays(7)
+                    });
                     return RedirectToAction("Index", "Home");
                 }
-                else
-                {
-                    ModelState.AddModelError("", "Email or Password is incorrect.");
-                    return View(model);
-                }
-
+                ModelState.AddModelError("", "Invalid username or password.");
             }
             return View(model);
         }
@@ -47,8 +51,8 @@ namespace CTFApp.Controllers
 
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            Response.Cookies.Delete("jwt");
+            return RedirectToAction("Login", "Account");
         }
 
         public IActionResult Register()
@@ -72,30 +76,22 @@ namespace CTFApp.Controllers
                 }
 
                 string defaultImagePath = "\\images\\cat4.jpg";
+                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
 
-                User user = new User
+                User newUser = new User
                 {
-                    UserName = model.Username,
+                    Id = Guid.NewGuid().ToString(),
+                    Username = model.Username,
+                    Password = hashedPassword,
                     userScore = 0,
-                    ImageAva = defaultImagePath
+                    ImageAva = defaultImagePath,
+                    Role = "User"
                 };
-                var result = await _userManager.CreateAsync(user, model.Password);
+                var result = await _context.Users.AddAsync(newUser);
 
+                await _context.SaveChangesAsync();
 
-
-
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Login", "Account");
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error.Description);
-                    }
-                    return View(model);
-                }
+                return RedirectToAction("Login");
 
             }
             return View(model);

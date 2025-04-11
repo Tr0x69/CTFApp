@@ -5,14 +5,21 @@
 namespace CTFApp.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class addProfileImage : Migration
+    public partial class jwt : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "ImageAva",
-                table: "AspNetUsers",
+                name: "Password",
+                table: "Users",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<string>(
+                name: "Role",
+                table: "Users",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "");
@@ -22,8 +29,12 @@ namespace CTFApp.DataAccess.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "ImageAva",
-                table: "AspNetUsers");
+                name: "Password",
+                table: "Users");
+
+            migrationBuilder.DropColumn(
+                name: "Role",
+                table: "Users");
         }
     }
 }

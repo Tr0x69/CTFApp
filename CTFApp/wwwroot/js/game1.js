@@ -1,7 +1,7 @@
 ﻿let score = 0;
 let gameActive = false;
 let startTime;
-
+let settings = { cookiesPerClick: 1, clickTimelimit: 50000 };
 // Function to get the value of a cookie
 function getCookie(name) {
     let match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
@@ -81,7 +81,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify(userData)
+                    body: JSON.stringify(userData),
+                    credentials: "include"
                 })
                     .then(response => response.json())
                     .then(data => {

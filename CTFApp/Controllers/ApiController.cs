@@ -1,9 +1,10 @@
 ﻿using CTFApp.DataAccess.Data;
 using CTFApp.Models;
+using CTFApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PuppeteerSharp;
 
 namespace CTFApp.Controllers
@@ -15,32 +16,35 @@ namespace CTFApp.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly UserManager<User> _userManager;
 
 
-        public ApiController(ApplicationDbContext ctx, IWebHostEnvironment webHostEnvironment, UserManager<User> userManager)
+        public ApiController(ApplicationDbContext ctx, IWebHostEnvironment webHostEnvironment)
         {
             _context = ctx;
             _webHostEnvironment = webHostEnvironment;
-            _userManager = userManager;
         }
 
 
 
         [HttpPost("game/submitscore")]
-        public IActionResult SubmitScore([FromBody] User user)
+        public async Task<IActionResult> SubmitScore([FromBody] UserScoreViewModel user)
         {
-            var existingUser = _context.Users.FirstOrDefault(u => u.UserName == user.UserName);
+            if (user == null || string.IsNullOrEmpty(user.Username) || user.userScore < 0)
+            {
+                return BadRequest(new { message = "Invalid Data" });
+            }
 
+            var usernameFromToken = User.FindFirst("username")?.Value;
+            if (string.IsNullOrEmpty(usernameFromToken) || usernameFromToken != user.Username)
+            {
+                return Unauthorized(new { message = "Unauthorized" });
+            }
+
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == user.Username);
             if (existingUser == null)
             {
-                return BadRequest(new { message = "Invalid Data." });
+                return BadRequest(new { message = "User not found." });
             }
-            if (string.IsNullOrEmpty(existingUser.UserName) || user.userScore < 0)
-            {
-                return BadRequest(new { message = "Invalid Data." });
-            }
-
 
 
 
@@ -62,41 +66,34 @@ namespace CTFApp.Controllers
         }
 
 
-        [HttpGet("game/user")]
-        public IActionResult GetUser(int? score)
-        {
-            if (score < 0 || score == null)
-            {
-                return BadRequest(new { message = "Score is required" });
-            }
-            //https://learn.microsoft.com/en-us/ef/core/querying/sql-queries?tabs=sqlserver
-            //The SQL query must return data for all properties of the entity type.
-            string query = $@"SELECT Id, UserName, userScore,  
-        '' as Email, '' as NormalizedEmail, CAST(0 AS BIT) as EmailConfirmed,
-        '' as PasswordHash, '' as SecurityStamp, '' as ConcurrencyStamp,
-        '' as PhoneNumber, CAST(0 AS BIT) as PhoneNumberConfirmed, CAST(0 AS BIT) as TwoFactorEnabled,
-        CAST(0 AS BIT) as LockoutEnabled, NULL as LockoutEnd, 0 as AccessFailedCount,
-        '' as NormalizedUserName,'test' as ImageAva
-        FROM AspNetUsers WHERE userScore > '{score}'";
+        //[HttpGet("game/user")]
+        //public IActionResult GetUser(string score)
+        //{
+        //    if (string.IsNullOrEmpty(score))
+        //    {
+        //        return BadRequest(new { message = "Score is required" });
+        //    }
 
-            try
-            {
-                var user = _context.Users.FromSqlRaw(query).FirstOrDefault();
-                if (user == null)
-                {
-                    return NotFound(new { message = "User not found." });
-                }
-                return Ok(new { user.Id, user.UserName, user.userScore, user.Email, user.EmailConfirmed, user.PasswordHash, user.NormalizedEmail, user.SecurityStamp, user.ConcurrencyStamp, user.PhoneNumber, user.PhoneNumberConfirmed, user.TwoFactorEnabled, user.LockoutEnabled, user.LockoutEnd, user.AccessFailedCount, user.NormalizedUserName });
-            }
-            catch (Microsoft.Data.SqlClient.SqlException ex)
-            {
-                return StatusCode(500, new { message = "Something went wrong while processing your request." });
-            }
-            catch (InvalidCastException ex)
-            {
-                return StatusCode(500, new { message = "Something went wrong while processing your request." });
-            }
-        }
+        //    string query = $"SELECT * FROM Users WHERE userScore = {score}";
+
+        //    try
+        //    {
+        //        var user = _context.Users.FromSqlRaw(query).ToList();
+        //        if (user == null)
+        //        {
+        //            return NotFound(new { message = "User not found." });
+        //        }
+        //        return Ok(user.Select(user => new { user.Id, user.Username, user.userScore, user.Email, user.EmailConfirmed, user.PasswordHash, user.NormalizedEmail, user.SecurityStamp, user.ConcurrencyStamp, user.PhoneNumber, user.PhoneNumberConfirmed, user.TwoFactorEnabled, user.LockoutEnabled, user.LockoutEnd, user.AccessFailedCount, user.NormalizedUserName }));
+        //    }
+        //    catch (Microsoft.Data.SqlClient.SqlException ex)
+        //    {
+        //        return StatusCode(500, new { message = "Something went wrong while processing your request." });
+        //    }
+        //    catch (InvalidCastException ex)
+        //    {
+        //        return StatusCode(500, new { message = "Something went wrong while processing your request." });
+        //    }
+        //}
 
 
 
@@ -138,11 +135,16 @@ namespace CTFApp.Controllers
 
             }
 
-            var user = await _userManager.GetUserAsync(User);
-
+            var username = User.FindFirst("username")?.Value;
+            if (string.IsNullOrEmpty(username))
+            {
+                return Unauthorized(new { message = "Not authenticated." });
+            }
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == username);
             if (user == null)
             {
-                return Unauthorized();
+                return Unauthorized(new { message = "User not found." });
             }
 
             string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
@@ -185,12 +187,117 @@ namespace CTFApp.Controllers
             }
             user.ImageAva = $"\\uploads\\{fileName}";
 
-            await _userManager.UpdateAsync(user);
+            await _context.SaveChangesAsync();
 
             return Ok(new { success = true, message = "File Uploaded Succesfully", url = $"/uploads/{fileName}" });
 
 
         }
+
+
+
+
+        [HttpPost("admin/import-users")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ImportUserUpdate()
+        {
+            try
+            {
+                if (Request.Form.Files.Count == 0)
+                {
+                    return BadRequest(new { message = "No file uploaded." });
+                }
+
+                var file = Request.Form.Files[0];
+                if (file.Length == 0)
+                {
+                    return BadRequest(new { message = "Empty file." });
+                }
+
+                using var stream = new StreamReader(file.OpenReadStream());
+                string jsonContent = await stream.ReadToEndAsync();
+
+                var settings = new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.All
+                };
+                var updates = JsonConvert.DeserializeObject<List<Object>>(jsonContent, settings);
+
+
+                if (updates == null || updates.Count == 0)
+                {
+                    return BadRequest(new { message = "Invalid or empty JSON data." });
+                }
+
+
+                foreach (var update in updates)
+                {
+                    if (update is UserUpdateDto userUpdate)
+                    {
+                        var user = await _context.Users.FindAsync(userUpdate.Id);
+                        if (user == null)
+                        {
+                            continue;
+                        }
+                        if (userUpdate.Username != null)
+                            user.Username = userUpdate.Username;
+                        if (userUpdate.userScore != 0)
+                            user.userScore = userUpdate.userScore.Value;
+                        if (userUpdate.ImageAva != null)
+                            user.ImageAva = userUpdate.ImageAva;
+                        if (userUpdate.Role != null)
+                            user.Role = userUpdate.Role;
+                    }
+                }
+                await _context.SaveChangesAsync();
+                return Ok($"Processed {updates.Count} updates.");
+
+            }
+            catch (JsonSerializationException ex)
+            {
+                return BadRequest(new { message = "Invalid JSON format." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred." });
+            }
+        }
+
+        [HttpGet("admin/export-users")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ExportUserUpdate()
+        {
+            try
+            {
+                var users = await _context.Users.ToListAsync();
+
+                if (users == null || users.Count == 0)
+                {
+                    return NotFound(new { message = "No users found." });
+                }
+
+                var exportUsers = users.Select(u => new UserUpdateDto
+                {
+                    Id = u.Id,
+                    Username = u.Username,
+                    userScore = u.userScore,
+                    ImageAva = u.ImageAva,
+                    Role = u.Role
+                }).ToList();
+                var settings = new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.Objects
+                };
+                string json = JsonConvert.SerializeObject(exportUsers, Formatting.Indented, settings);
+                return File(new System.Text.UTF8Encoding().GetBytes(json), "application/json", "users_export.json");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred." });
+            }
+        }
+
+
 
 
 

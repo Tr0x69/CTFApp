@@ -1,16 +1,23 @@
-﻿@using Microsoft.AspNetCore.Identity
-@using System.Security.Claims
-@inject SignInManager<User> signInManager;
+﻿@using System.Security.Claims
+
 
 @{
-	var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+	var userId = User.FindFirstValue("Id");
+	var role = User.FindFirstValue("Role");
+	var isLoggedIn = User.Identity?.IsAuthenticated?? false;
 }
 
 <ul class="navbar-nav ms-auto">
-	@if(signInManager.IsSignedIn(User)) {
+	@if (isLoggedIn)
+	{
 		<li class="nav-item">
 			<a class="nav-link text-white" asp-controller="Profile" asp-route-id="@userId" asp-action="Index">Profile</a>
 		</li>
+		@if(role == "Admin"){
+			<li class="nav-item">
+				<a class="nav-link text-dark text-white" asp-controller="Admin" asp-action="Index">GameSetting</a>
+			</li>
+		}
 		<li class="nav-item">
 			<a class="nav-link text-dark text-white" asp-controller="Account" asp-action="Logout">Logout</a>
 		</li>

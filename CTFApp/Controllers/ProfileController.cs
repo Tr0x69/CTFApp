@@ -1,8 +1,8 @@
 ﻿using CTFApp.DataAccess.Data;
 using CTFApp.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CTFApp.Controllers
 {
@@ -10,14 +10,12 @@ namespace CTFApp.Controllers
     public class ProfileController : Controller
     {
 
-        private readonly UserManager<User> _userManager;
         private readonly ApplicationDbContext _context;
 
 
-        public ProfileController(ApplicationDbContext ctx, UserManager<User> userManager)
+        public ProfileController(ApplicationDbContext ctx)
         {
             _context = ctx;
-            _userManager = userManager;
         }
 
 
@@ -28,7 +26,7 @@ namespace CTFApp.Controllers
             User user;
             if (id == null)
             {
-                user = await _userManager.GetUserAsync(User);
+                user = await _context.Users.FirstOrDefaultAsync(user => user.Id == id);
                 if (user == null)
                 {
                     return Unauthorized();
