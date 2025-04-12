@@ -66,34 +66,35 @@ namespace CTFApp.Controllers
         }
 
 
-        //[HttpGet("game/user")]
-        //public IActionResult GetUser(string score)
-        //{
-        //    if (string.IsNullOrEmpty(score))
-        //    {
-        //        return BadRequest(new { message = "Score is required" });
-        //    }
+        [HttpGet("game/user")]
+        [AllowAnonymous]
+        public IActionResult GetUser(string score)
+        {
+            if (string.IsNullOrEmpty(score))
+            {
+                return BadRequest(new { message = "Score is required" });
+            }
 
-        //    string query = $"SELECT * FROM Users WHERE userScore = {score}";
+            string query = $"SELECT * FROM Users WHERE userScore = {score}";
 
-        //    try
-        //    {
-        //        var user = _context.Users.FromSqlRaw(query).ToList();
-        //        if (user == null)
-        //        {
-        //            return NotFound(new { message = "User not found." });
-        //        }
-        //        return Ok(user.Select(user => new { user.Id, user.Username, user.userScore, user.Email, user.EmailConfirmed, user.PasswordHash, user.NormalizedEmail, user.SecurityStamp, user.ConcurrencyStamp, user.PhoneNumber, user.PhoneNumberConfirmed, user.TwoFactorEnabled, user.LockoutEnabled, user.LockoutEnd, user.AccessFailedCount, user.NormalizedUserName }));
-        //    }
-        //    catch (Microsoft.Data.SqlClient.SqlException ex)
-        //    {
-        //        return StatusCode(500, new { message = "Something went wrong while processing your request." });
-        //    }
-        //    catch (InvalidCastException ex)
-        //    {
-        //        return StatusCode(500, new { message = "Something went wrong while processing your request." });
-        //    }
-        //}
+            try
+            {
+                var user = _context.Users.FromSqlRaw(query).ToList();
+                if (user == null)
+                {
+                    return NotFound(new { message = "User not found." });
+                }
+                return Ok(user);
+            }
+            catch (Microsoft.Data.SqlClient.SqlException ex)
+            {
+                return StatusCode(500, new { message = ex });
+            }
+            catch (InvalidCastException ex)
+            {
+                return StatusCode(500, new { message = "Something went wrong while processing your request." });
+            }
+        }
 
 
 

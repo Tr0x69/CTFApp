@@ -75,8 +75,8 @@ namespace CTFApp.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c3648669-7a6f-42d1-88e6-44f6b6a9b57e",
-                            Password = "$2a$11$.TU.36GokhZBVmZRro9Cpeq0ubJPS6sLV5kWkw.dC1R0/RsNWynIe",
+                            Id = "a494e680-4059-4ab6-b865-85a55eb5c165",
+                            Password = "$2a$11$OcAlHbjbwP1xewGofQlSJe3226yf9Bixrp1Y.sTZtA4//BkuBp9Ge",
                             Role = "Admin",
                             Username = "admin",
                             userScore = 0

@@ -1,13 +1,12 @@
 using System.Diagnostics;
 using CTFApp.DataAccess.Data;
 using CTFApp.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTFApp.Controllers
 {
-    [Authorize]
+
     public class HomeController : Controller
     {
         private ApplicationDbContext _context;

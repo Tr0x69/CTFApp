@@ -52,6 +52,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
+
+
+
 //builder.WebHost.UseKestrel(options =>
 //{
 //    options.ListenAnyIP(5017); // Allow connections from WSL and other devices
@@ -86,7 +90,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=Login}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 //app.MapRazorPages();
 
 //app.MapHub<ChatHub>("/chathub");

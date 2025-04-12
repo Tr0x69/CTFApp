@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CTFApp.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250407053726_InitWithoutIdentity")]
-    partial class InitWithoutIdentity
+    [Migration("20250412213936_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,7 +44,7 @@ namespace CTFApp.DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            flag = "ctf{example_flag_content}"
+                            flag = "CTFApp{example_flag_content}"
                         });
                 });
 
@@ -54,6 +54,14 @@ namespace CTFApp.DataAccess.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ImageAva")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
@@ -66,6 +74,16 @@ namespace CTFApp.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "a494e680-4059-4ab6-b865-85a55eb5c165",
+                            Password = "$2a$11$OcAlHbjbwP1xewGofQlSJe3226yf9Bixrp1Y.sTZtA4//BkuBp9Ge",
+                            Role = "Admin",
+                            Username = "admin",
+                            userScore = 0
+                        });
                 });
 #pragma warning restore 612, 618
         }
